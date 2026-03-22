@@ -1,8 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const studentRoute = require("./routes/studentsRoute");
 const db = require("./utils/dbConnection");
-const studentModel = require("./models/students");
 
 app.use(express.json());
 
