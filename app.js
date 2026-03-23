@@ -4,6 +4,8 @@ const app = express();
 const studentRoute = require("./routes/studentsRoute");
 const db = require("./utils/dbConnection");
 
+require("./models");
+
 app.use(express.json());
 
 app.get("/", (req, res) => {

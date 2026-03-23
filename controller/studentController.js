@@ -1,4 +1,5 @@
-const Student = require("../models/students");
+const { student: Student, idCard: IdCard } = require("../models/index");
+const sequelize = require("../utils/dbConnection");
 
 const addEntries = async (req, res) => {
     try {
@@ -62,4 +63,20 @@ const deleteEntry = async (req, res) => {
     }
 }
 
-module.exports = { addEntries, getAllEntries, getEntryById, updateEntry, deleteEntry };
+// added transaction to add id card and student id because if one fails then both should fail same as (example upi ref.)
+const addIdCardAndStudentID = async (req, res) => {
+    const t = await sequelize.transaction();
+    try {
+        const student = await Student.create(req.body.student, { transaction: t });
+        const card = await IdCard.create({ ...req.body.idCard, studentId: student.id }, { transaction: t });
+        await t.commit();
+        res.status(201).json({ message: "Id card added successfully", data: { student, card } });
+    }
+    catch (err) {
+        await t.rollback();
+        console.log("Error adding id card: " + err);
+        res.status(500).json({ message: "Error adding id card", error: err.message });
+    }
+}
+
+module.exports = { addEntries, getAllEntries, getEntryById, updateEntry, deleteEntry, addIdCardAndStudentID };
