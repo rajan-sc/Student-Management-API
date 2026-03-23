@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const studentRoute = require("./routes/studentsRoute");
 const db = require("./utils/dbConnection");
+const courseRoute = require("./routes/coursesRoute");
 
 require("./models");
 
@@ -13,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/students", studentRoute);
+app.use("/courses", courseRoute);
 
 db.sync({ force: false }).then(() => {
     console.log("Database synced");
